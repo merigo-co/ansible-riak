@@ -59,8 +59,3 @@
   lineinfile: 'dest=/lib/systemd/system/riak.service line="LimitNOFILE=131072" insertafter="^RuntimeDirectory=riak"'
   tags: Debian
   when: 'ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie"'
-
-- name: Reload systemd
-  systemd: state=restarted daemon_reload=yes name=riak enabled=yes
-  tags: Debian
-  when: '(ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie") and (riak_init_system == "system")'
