@@ -34,12 +34,14 @@
     - riak_install_package_cloud
 
 - name: Install Riak for Debian
-  package: "name={{ riak_package }} state=present update_cache=yes"
+  package: "name={{ riak_package }} state=present update_cache=yes allow_unauthenticated=yes"
   tags: Debian
   when: "'deb' not in riak_package"
 
 - name: Install Riak for Debian
-  apt: "deb={{ riak_package }}"
+  apt:
+    name: "deb={{ riak_package }}"
+    allow_unauthenticated: yes
   tags: Debian
   when:
     - "'deb' in riak_package"
