@@ -20,31 +20,39 @@
   stat: path=/etc/riak/riak.conf
   register: dist
 
-- name: Add Package Cloud repository key without validation
-  apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
-  tags: Debian
-  when:
-    - not dist.stat.exists
-    - riak_install_package_cloud
+#- name: Add Package Cloud repository key without validation
+#  apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
+#  tags: Debian
+#  when:
+#    - not dist.stat.exists
+#    - riak_install_package_cloud
 
-- name: Add Basho Riak repository (hosted at Package Cloud)
-  template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
-  when:
-    - not dist.stat.exists
-    - riak_install_package_cloud
+#- name: Add Basho Riak repository (hosted at Package Cloud)
+#  template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
+#  when:
+#    - not dist.stat.exists
+#    - riak_install_package_cloud
 
-- name: Install Riak for Debian
-  package: "name={{ riak_package }} state=present update_cache=yes allow_unauthenticated=yes"
-  tags: Debian
-  when: "'deb' not in riak_package"
+#- name: Install Riak for Debian
+#  package: "name={{ riak_package }} state=present update_cache=yes allow_unauthenticated=yes"
+#  tags: Debian
+#  when: "'deb' not in riak_package"
+
+- name: "Copy deb file to server"
+  become: true
+  copy:
+    src: "riak_2.2.3-1_amd64.deb"
+    dest: "/tmp/riak_2.2.3-1_amd64.deb"
+    owner: root
+    group: root
+    mode: 0500
 
 - name: Install Riak for Debian
   apt:
-    name: "deb={{ riak_package }}"
+    deb: "/tmp/riak_2.2.3-1_amd64.deb"
     allow_unauthenticated: yes
   tags: Debian
   when:
-    - "'deb' in riak_package"
     - not dist.stat.exists
 
 - name: Set the riak ulimit for Debian
