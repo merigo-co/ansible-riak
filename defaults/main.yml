@@ -4,9 +4,10 @@
 #   - URL to package
 #   - file path to package (path must be accessible on machine running playbook)
 #   - package name
-riak_package:       riak
+#riak_package:       riak
+riak_package:        binaries/riak_2.2.3-1_amd64.deb
 
-riak_install_package_cloud: true
+riak_install_package_cloud: false
 
 riak_enterprise:    false
 
