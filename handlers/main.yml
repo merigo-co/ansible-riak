@@ -7,12 +7,20 @@
 
 - name: wait for kv
   riak: wait_for_service=kv http_conn={{ riak_http_bind_ip }}:{{ riak_http_port }}
+  vars:
+    ansible_python_interpreter: /usr/bin/python
 
 - name: commit cluster changes
   riak: command=commit http_conn={{ riak_http_bind_ip }}:{{ riak_http_port }}
+  vars:
+    ansible_python_interpreter: /usr/bin/python
 
 - name: wait for handoffs
   riak: wait_for_handoffs=1200 http_conn={{ riak_http_bind_ip }}:{{ riak_http_port }}
+  vars:
+    ansible_python_interpreter: /usr/bin/python
 
 - name: wait for ring
   riak: wait_for_ring=600 http_conn={{ riak_http_bind_ip }}:{{ riak_http_port }}
+  vars:
+    ansible_python_interpreter: /usr/bin/python
