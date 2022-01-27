@@ -47,6 +47,40 @@
     group: root
     mode: 0500
 
+- name: "Copy libssl deb file to server"
+  become: true
+  copy:
+    src: "libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb"
+    dest: "/tmp/libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb"
+    owner: root
+    group: root
+    mode: 0500
+  when: 'ansible_distribution_release != "xenial"'
+
+- name: "Copy deb file to server"
+  become: true
+  copy:
+    src: "libssl1.0-dev_1.0.2n-1ubuntu5.7_amd64.deb"
+    dest: "/tmp/libssl1.0-dev_1.0.2n-1ubuntu5.7_amd64.deb"
+    owner: root
+    group: root
+    mode: 0500
+  when: 'ansible_distribution_release != "xenial"'
+
+- name: Install old SSL for Focal 20.04
+  apt:
+    deb: "/tmp/libssl1.0.0_1.0.2n-1ubuntu5.7_amd64.deb"
+    allow_unauthenticated: yes
+  tags: Debian
+  when: 'ansible_distribution_release != "xenial"'
+
+- name: Install old SSL dev for Focal 20.04
+  apt:
+    deb: "/tmp/libssl1.0-dev_1.0.2n-1ubuntu5.7_amd64.deb"
+    allow_unauthenticated: yes
+  tags: Debian
+  when: 'ansible_distribution_release != "xenial"'
+
 - name: Install Riak for Debian
   apt:
     deb: "/tmp/riak_2.2.3-1_amd64.deb"
@@ -60,12 +94,7 @@
   tags: Debian
   when: 'ansible_os_family == "Debian"'
 
-- name: Set the riak ulimit for Ubuntu Trusty
-  copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
-  tags: Debian
-  when: 'ansible_distribution_release != "xenial" and ansible_distribution_release != "jessie"'
-
-- name: Set the riak ulimit for Ubuntu Xenial
+- name: Set the riak ulimit for Ubuntu
   lineinfile: 'dest=/lib/systemd/system/riak.service line="LimitNOFILE=131072" insertafter="^RuntimeDirectory=riak"'
   tags: Debian
-  when: 'ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie"'
+  when: 'ansible_distribution_release != "xenial" or ansible_distribution_release == "jessie"'
